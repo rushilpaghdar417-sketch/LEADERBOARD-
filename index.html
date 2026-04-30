@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IRIS 2K26 Leaderboard</title>
+<title>IRIS 2K26 — League Standing</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
 <style>
-
 body{
   margin:0;
   font-family:'Orbitron',sans-serif;
@@ -18,31 +17,38 @@ body{
 
 /* HEADER */
 .header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px;
+  max-width:1100px;
+  margin:20px auto 10px;
+  padding:0 10px;
 }
-
 .header h1{
   font-size:32px;
   margin:0;
 }
-
 .header h2{
-  font-size:14px;
-  color:#aaa;
-  margin-top:5px;
+  font-size:13px;
+  color:#9aa4ad;
+  margin-top:4px;
+  letter-spacing:2px;
+}
+
+/* STATUS */
+#status{
+  text-align:center;
+  font-size:12px;
+  color:#9aa4ad;
+  margin:10px 0;
 }
 
 /* BOARD */
 .board{
   width:95%;
   max-width:1100px;
-  margin:20px auto;
+  margin:10px auto 30px;
   background:linear-gradient(180deg,#c8841c,#9f6714);
   border-radius:6px;
   overflow:hidden;
+  border:1px solid #1e2732;
 }
 
 /* TABLE */
@@ -55,7 +61,6 @@ table{
 thead{
   background:rgba(0,0,0,0.25);
 }
-
 th{
   padding:14px;
   font-size:12px;
@@ -71,37 +76,32 @@ td{
   border-bottom:1px solid rgba(0,0,0,0.2);
 }
 
-/* DARK STRIPES */
+/* STRIPES */
 tbody tr:nth-child(even){
   background:rgba(0,0,0,0.15);
 }
 
-/* RANK BADGE */
+/* HOVER */
+tbody tr:hover{
+  background:rgba(0,0,0,0.25);
+}
+
+/* RANK BOX */
 .rank-box{
   background:#111;
-  color:#fff;
   padding:6px 10px;
   border-radius:4px;
+  font-weight:700;
   display:inline-block;
-  font-weight:bold;
 }
 
 /* TEAM */
-.team{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.team-name{
+  font-weight:600;
+  letter-spacing:0.5px;
 }
 
-/* TEAM ICON (placeholder circle) */
-.team-icon{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  background:#222;
-}
-
-/* POINT ALIGN */
+/* ALIGN NUMBERS */
 td:nth-child(3),
 td:nth-child(4),
 td:nth-child(5){
@@ -109,13 +109,10 @@ td:nth-child(5){
   font-weight:600;
 }
 
-/* STATUS */
-#status{
-  text-align:center;
-  font-size:12px;
-  color:#aaa;
-  margin-top:10px;
-}
+/* TOP 3 subtle highlight */
+.rank-1 td{ background:rgba(0,0,0,0.35); }
+.rank-2 td{ background:rgba(0,0,0,0.25); }
+.rank-3 td{ background:rgba(0,0,0,0.2); }
 
 </style>
 </head>
@@ -123,31 +120,30 @@ td:nth-child(5){
 <body>
 
 <div class="header">
-  <div>
-    <h1>IRIS 2K26</h1>
-    <h2>LEAGUE STANDING</h2>
-  </div>
+  <h1>IRIS 2K26</h1>
+  <h2>LEAGUE STANDING</h2>
 </div>
 
 <div id="status">Loading...</div>
 
 <div class="board">
-<table>
-<thead>
-<tr>
-<th>RANK</th>
-<th>TEAM</th>
-<th>PLACEMENT POINTS</th>
-<th>KILL POINTS</th>
-<th>TOTAL POINTS</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
+  <table>
+    <thead>
+      <tr>
+        <th>RANK</th>
+        <th>TEAM</th>
+        <th>PLACEMENT POINTS</th>
+        <th>KILL POINTS</th>
+        <th>TOTAL POINTS</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
 </div>
 
 <script>
 
+// 🔥 Your Google Sheet CSV link
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
 async function loadData(){
@@ -158,16 +154,18 @@ async function loadData(){
 
     const rows = csv.trim().split("\n").slice(1);
 
-    const teams = rows.map(r=>{
-      const c = r.split(",");
-      return {
-        rank:+c[0],
-        name:c[1],
-        place:+c[2],
-        kills:+c[3],
-        total:+c[4]
-      }
-    });
+    const teams = rows
+      .map(r=>{
+        const c = r.split(",");
+        return {
+          rank: Number(c[0]),
+          name: (c[1] || "").replace(/"/g,'').toUpperCase(),
+          place: Number(c[2]),
+          kills: Number(c[3]),
+          total: Number(c[4])
+        };
+      })
+      .filter(t=>t.name);
 
     render(teams);
 
@@ -176,6 +174,7 @@ async function loadData(){
 
   }catch(e){
     document.getElementById("status").innerText = "Error loading data";
+    console.error(e);
   }
 }
 
@@ -185,17 +184,11 @@ function render(data){
 
   data.forEach(t=>{
     const tr = document.createElement("tr");
+    tr.classList.add(`rank-${t.rank}`);
 
     tr.innerHTML = `
       <td><span class="rank-box">${t.rank}</span></td>
-
-      <td>
-        <div class="team">
-          <div class="team-icon"></div>
-          ${t.name}
-        </div>
-      </td>
-
+      <td class="team-name">${t.name}</td>
       <td>${t.place}</td>
       <td>${t.kills}</td>
       <td>${t.total}</td>
@@ -205,8 +198,9 @@ function render(data){
   });
 }
 
+// load + auto refresh
 loadData();
-setInterval(loadData,60000);
+setInterval(loadData, 60000);
 
 </script>
 
