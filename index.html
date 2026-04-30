@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS 2K26 Leaderboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Orbitron',sans-serif;
+  background:#060b12;
+  color:#fff;
+  text-align:center;
+}
+
+h1{font-size:42px;margin:20px 0 5px;color:#ff6a00;}
+h2{margin:0 0 20px;font-size:16px;color:#00d4ff;letter-spacing:2px;}
+
+table{
+  width:90%;
+  margin:30px auto;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #1a2d42;
+}
+
+th{color:#ff6a00;}
+tr:hover{background:#111;}
+
+.rank1{color:gold;}
+.rank2{color:silver;}
+.rank3{color:#cd7f32;}
+
+.points-bar{
+  height:5px;
+  background:linear-gradient(90deg,#ff3300,#ff6a00,#ffb347);
+}
+
+#status{
+  margin-top:10px;
+  font-size:14px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<h1>IRIS 2K26</h1>
+<h2>FREE FIRE MAX — BATTLE ROYALE LEADERBOARD</h2>
+
+<div id="status">Loading leaderboard...</div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Team</th>
+<th>Booyah</th>
+<th>Kills</th>
+<th>Points</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<script>
+
+// 🔥 YOUR CSV LINK (embedded)
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
+
+// LOAD DATA
+async function loadData(){
+  try{
+    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(SHEET_URL);
+    const res = await fetch(proxy);
+    const data = await res.json();
+
+    const csv = data.contents;
+    const rows = csv.trim().split("\n").slice(1);
+
+    const teams = rows.map(r=>{
+      const c = r.split(",");
+      return {
+        rank:+c[0],
+        name:c[1],
+        booyah:+c[2],
+        kills:+c[3],
+        points:+c[4]
+      }
+    }).sort((a,b)=>a.rank-b.rank);
+
+    render(teams);
+
+    document.getElementById("status").innerText =
+      "Last Updated: " + new Date().toLocaleTimeString();
+
+  }catch(e){
+    document.getElementById("status").innerText = "Error loading data";
+  }
+}
+
+// RENDER
+function render(data){
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  const max = Math.max(...data.map(x=>x.points));
+
+  data.forEach(t=>{
+    const tr = document.createElement("tr");
+
+    if(t.rank===1) tr.classList.add("rank1");
+    if(t.rank===2) tr.classList.add("rank2");
+    if(t.rank===3) tr.classList.add("rank3");
+
+    tr.innerHTML = `
+      <td>${t.rank}</td>
+      <td>${t.name}</td>
+      <td>${t.booyah}</td>
+      <td>${t.kills}</td>
+      <td>
+        ${t.points}
+        <div class="points-bar" style="width:${(t.points/max)*100}%"></div>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+// AUTO LOAD + AUTO REFRESH
+loadData();
+setInterval(loadData, 60000);
+
+</script>
+
+</body>
+</html>
