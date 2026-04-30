@@ -193,72 +193,125 @@ td:nth-child(5){
 </div>
 
 <script>
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
-const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
+let lastDataHash = "";
 
-async function loadData(){
-  try{
-    const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(URL));
-    const text = await res.text();
+async function loadData() {
+  try {
+    const proxy = "https://corsproxy.io/?";
+    const res = await fetch(proxy + encodeURIComponent(SHEET_URL));
+    const csv = await res.text();
 
-    const rows = text.split("\n").slice(1);
+    // 🔥 HASH CHECK (prevents unnecessary re-render)
+    const newHash = hash(csv);
+    if (newHash === lastDataHash) {
+      updateStatus("LIVE • NO CHANGE");
+      return;
+    }
+    lastDataHash = newHash;
 
-    let data = rows.map(r=>{
+    const rows = csv.trim().split("\n").slice(1);
+
+    const teams = rows.map(r => {
       const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-
-      return{
-        name:(c[1]||"TEAM").replace(/"/g,""),
-        place:Number(c[2])||0,
-        kills:Number(c[3])||0,
-        total:Number(c[4])||0
+      return {
+        name: (c[1] || "").replace(/"/g,'').toUpperCase(),
+        place: Number(c[2]) || 0,
+        kills: Number(c[3]) || 0,
+        total: Number(c[4]) || 0
       };
-    });
+    }).filter(t => t.name);
 
-    data.sort((a,b)=>b.total-a.total);
+    // 🔥 SORT + AUTO RANK
+    teams.sort((a,b)=>b.total - a.total);
+    teams.forEach((t,i)=> t.rank = i+1);
 
-    render(data);
+    renderSmooth(teams);
 
-    document.getElementById("status").innerText =
-      "LIVE • "+new Date().toLocaleTimeString();
+    updateStatus("LIVE • UPDATED");
 
-  }catch(e){
-    document.getElementById("status").innerText="ERROR LOADING DATA";
+  } catch(e) {
+    updateStatus("CONNECTION LOST");
+    console.error(e);
   }
 }
 
-function render(data){
+/* 🔥 SMOOTH RENDER (NO FLICKER) */
+function renderSmooth(data) {
   const tbody = document.getElementById("tbody");
-  tbody.innerHTML="";
 
-  data.forEach((t,i)=>{
-    const tr = document.createElement("tr");
+  data.forEach((t, index) => {
+    let row = tbody.children[index];
 
-    const rank=i+1;
-    if(rank<=3) tr.classList.add("rank-"+rank);
+    if (!row) {
+      row = document.createElement("tr");
+      tbody.appendChild(row);
+    }
+
+    if(t.rank <= 3) row.className = `rank-${t.rank}`;
+    else row.className = "";
 
     const initials = t.name.split(" ").map(w=>w[0]).join("").slice(0,2);
 
-    tr.innerHTML=`
-      <td class="rank">${rank}</td>
+    const newHTML = `
       <td>
-        <div class="team">
-          <div class="logo">${initials}</div>
-          ${t.name}
+        <div class="rank-badge ${t.rank<=3?'':'default'}">
+          <span>${t.rank}</span>
+        </div>
+      </td>
+      <td>
+        <div class="team-cell">
+          <div class="team-logo">${initials}</div>
+          <span class="team-name">${t.name}</span>
         </div>
       </td>
       <td>${t.place}</td>
       <td>${t.kills}</td>
-      <td class="points">${t.total}</td>
+      <td class="points-total">${t.total}</td>
     `;
 
-    tbody.appendChild(tr);
+    // 🔥 Only update if changed
+    if (row.innerHTML !== newHTML) {
+      row.innerHTML = newHTML;
+
+      // 🔥 FLASH UPDATE EFFECT
+      row.style.background = "rgba(0,255,136,0.15)";
+      setTimeout(() => {
+        row.style.background = "";
+      }, 400);
+    }
   });
+
+  // Remove extra rows if needed
+  while (tbody.children.length > data.length) {
+    tbody.removeChild(tbody.lastChild);
+  }
 }
 
+/* 🔥 STATUS UPDATE */
+function updateStatus(text) {
+  const el = document.getElementById("status");
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  el.innerText = `${text} • ${now}`;
+}
+
+/* 🔥 SIMPLE HASH FUNCTION */
+function hash(str) {
+  let h = 0, i, chr;
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i);
+    h = ((h << 5) - h) + chr;
+    h |= 0;
+  }
+  return h;
+}
+
+/* 🔥 INITIAL LOAD */
 loadData();
-setInterval(loadData,30000);
 
+/* ⚡ FAST REFRESH (EVERY 5 SEC) */
+setInterval(loadData, 5000);
 </script>
-
 </body>
 </html>
