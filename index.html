@@ -21,37 +21,31 @@ body{
   color:#fff;
   min-height:100vh;
 
-  /* 🔥 YOUR DRIVE BACKGROUND */
-  background: url("https://drive.google.com/file/d/1dhKnfhyuwGSLU8FpZRTluolzDkNs8vHW/view?usp=drivesdk") no-repeat center center fixed;
+  /* ✅ fallback gradient + image */
+  background:
+    radial-gradient(circle at center, #0a0a12 0%, #000 100%),
+    url("https://drive.google.com/file/d/1dhKnfhyuwGSLU8FpZRTluolzDkNs8vHW/view?usp=drivesdk")
+    no-repeat center center fixed;
+
   background-size: cover;
 }
 
-/* 🌫️ DARK OVERLAY FOR READABILITY */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  z-index:0;
-}
-
+/* container */
 .container{
-  position:relative;
-  z-index:1;
   max-width:1100px;
   margin:auto;
   padding:30px 15px;
 }
 
-/* HEADER */
+/* header */
 .header{
   text-align:center;
   margin-bottom:25px;
 }
 .header h1{
   font-family:'Orbitron';
-  font-size:56px;
-  letter-spacing:8px;
+  font-size:48px;
+  letter-spacing:6px;
   background:linear-gradient(#fff,#ffcc00,#ff6b00);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -59,15 +53,16 @@ body::before{
 .header h2{
   font-family:'Orbitron';
   color:var(--accent);
-  letter-spacing:6px;
-  font-size:14px;
+  letter-spacing:5px;
+  font-size:13px;
 }
 
-/* STATUS */
+/* status */
 .status{
   text-align:center;
   margin-bottom:20px;
   font-family:'Orbitron';
+  font-size:13px;
 }
 .dot{
   width:8px;height:8px;
@@ -78,45 +73,41 @@ body::before{
   box-shadow:0 0 10px var(--accent);
 }
 
-/* 💎 LIQUID GLASS BOARD */
+/* 💎 GLASS BOARD */
 .board{
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
 
   border-radius:20px;
-  border:1px solid rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.25);
 
   box-shadow:
-    0 10px 40px rgba(0,0,0,0.6),
-    inset 0 0 20px rgba(255,255,255,0.05);
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 0 25px rgba(255,255,255,0.08);
 
   overflow:hidden;
   position:relative;
 }
 
-/* ✨ GLASS EDGE GLOW */
-.board::before{
+/* glass reflection */
+.board::after{
   content:"";
   position:absolute;
-  inset:0;
-  border-radius:20px;
-  padding:1px;
+  top:0;
+  left:0;
+  right:0;
+  height:40%;
 
-  background:linear-gradient(120deg,
-    rgba(255,255,255,0.5),
+  background:linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.25),
     rgba(255,255,255,0.05),
-    rgba(255,255,255,0.5)
+    transparent
   );
-
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
 }
 
-/* TABLE */
+/* table */
 table{
   width:100%;
   border-collapse:collapse;
@@ -124,40 +115,40 @@ table{
 }
 
 th,td{
-  padding:14px;
+  padding:12px;
   text-align:center;
 }
 
 th{
   font-family:'Orbitron';
   color:var(--secondary);
-  font-size:12px;
+  font-size:11px;
 }
 
 td:nth-child(2),th:nth-child(2){
   text-align:left;
 }
 
-/* WIDTH */
-th:nth-child(1),td:nth-child(1){width:70px;}
+/* widths */
+th:nth-child(1),td:nth-child(1){width:60px;}
 th:nth-child(2),td:nth-child(2){width:45%;}
 th:nth-child(3),td:nth-child(3){width:15%;}
 th:nth-child(4),td:nth-child(4){width:15%;}
 th:nth-child(5),td:nth-child(5){width:15%;}
 
-/* ROW */
+/* rows */
 tr{
   border-bottom:1px solid rgba(255,255,255,0.08);
-  transition:.2s;
+  transition:0.2s;
 }
 tr:hover{
   background:rgba(255,255,255,0.08);
 }
 
-/* RANK */
+/* rank */
 .rank-box{
-  width:46px;
-  height:36px;
+  width:42px;
+  height:34px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -167,7 +158,7 @@ tr:hover{
 }
 
 .rank-1 .rank-box{
-  background:linear-gradient(135deg,#ffd700,#ff8c00);
+  background:linear-gradient(#ffd700,#ff8c00);
   color:#000;
 }
 .rank-2 .rank-box{
@@ -179,17 +170,17 @@ tr:hover{
 }
 
 .rank-box.default{
-  background:rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.15);
 }
 
-/* TEAM */
+/* team */
 .team{
   display:flex;
   align-items:center;
   gap:10px;
 }
 .logo{
-  width:34px;height:34px;
+  width:30px;height:30px;
   background:rgba(255,255,255,0.1);
   display:flex;
   align-items:center;
@@ -198,23 +189,20 @@ tr:hover{
   color:var(--primary);
 }
 
-/* POINTS */
+/* points */
 .points{
   font-family:'Orbitron';
-  font-size:20px;
   color:var(--secondary);
 }
 
-/* FOOTER */
+/* footer */
 .footer{
   text-align:center;
   padding:15px;
   font-family:'Orbitron';
-  font-size:12px;
-  letter-spacing:3px;
-  color:#ccc;
+  font-size:11px;
+  color:#aaa;
 }
-
 </style>
 </head>
 
@@ -237,10 +225,10 @@ tr:hover{
 <thead>
 <tr>
   <th>RANK</th>
-  <th>TEAM SQUAD</th>
+  <th>TEAM</th>
   <th>PLACEMENT</th>
   <th>KILLS</th>
-  <th>TOTAL PTS</th>
+  <th>PTS</th>
 </tr>
 </thead>
 
@@ -266,9 +254,9 @@ async function loadData(){
   const rows = csv.trim().split("\n").slice(1);
 
   let data = rows.map(r=>{
-    const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const c = r.split(",");
     return {
-      name:(c[1]||"TEAM"),
+      name:c[1] || "TEAM",
       place:Number(c[2])||0,
       kills:Number(c[3])||0,
       total:Number(c[4])||0
@@ -284,7 +272,7 @@ async function loadData(){
 }
 
 function render(data){
-  const tbody = document.getElementById("tbody");
+  const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   data.forEach((t,i)=>{
@@ -293,11 +281,9 @@ function render(data){
 
     if(rank<=3) tr.classList.add("rank-"+rank);
 
-    const initials=t.name.substring(0,2);
-
     tr.innerHTML=`
       <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
-      <td><div class="team"><div class="logo">${initials}</div>${t.name}</div></td>
+      <td><div class="team"><div class="logo">${t.name.substring(0,2)}</div>${t.name}</div></td>
       <td>${t.place || "—"}</td>
       <td>${t.kills || "—"}</td>
       <td class="points">${t.total || "—"}</td>
