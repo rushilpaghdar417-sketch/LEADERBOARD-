@@ -226,45 +226,69 @@ tr{
 
 <script>
 
-const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
-async function loadData(){
-  const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(URL));
-  const text = await res.text();
+let lastHash = "";
 
-  const rows = text.split("\n").slice(1);
+// ⚡ LOAD DATA
+async function loadData() {
+  try {
+    const res = await fetch(SHEET_URL + "&t=" + Date.now()); // 🔥 prevent cache
+    const csv = await res.text();
 
-  let data = rows.map(r=>{
-    const c = r.split(",");
-    return{
-      name:(c[1]||"TEAM"),
-      place:Number(c[2])||0,
-      kills:Number(c[3])||0,
-      total:Number(c[4])||0
-    };
-  });
+    const newHash = hash(csv);
+    if (newHash === lastHash) {
+      updateStatus("LIVE • NO CHANGE");
+      return;
+    }
+    lastHash = newHash;
 
-  data.sort((a,b)=>b.total-a.total);
+    const rows = csv.trim().split("\n").slice(1);
 
-  render(data);
+    const data = rows.map(r => {
+      const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+      return {
+        name: (c[1] || "TEAM").replace(/"/g,""),
+        place: Number(c[2]) || 0,
+        kills: Number(c[3]) || 0,
+        total: Number(c[4]) || 0
+      };
+    });
+
+    // SORT
+    data.sort((a,b)=>b.total-a.total);
+
+    renderSmooth(data);
+
+    updateStatus("LIVE • UPDATED");
+
+  } catch (e) {
+    updateStatus("CONNECTION LOST");
+    console.error(e);
+  }
 }
 
-function render(data){
+// 🎬 SMOOTH UPDATE (NO FLICKER)
+function renderSmooth(data) {
   const tbody = document.getElementById("tbody");
-  tbody.innerHTML="";
 
   data.forEach((t,i)=>{
-    const tr=document.createElement("tr");
+    let row = tbody.children[i];
 
-    const rank=i+1;
-    if(rank<=3) tr.classList.add("rank-"+rank);
+    if (!row) {
+      row = document.createElement("tr");
+      tbody.appendChild(row);
+    }
 
-    const initials=t.name.substring(0,2);
+    const rank = i+1;
+    if(rank<=3) row.className = "rank-"+rank;
+    else row.className = "";
 
-    tr.innerHTML=`
-      <td>
-        <div class="rank-box ${rank<=3?'':'default'}">${rank}</div>
-      </td>
+    const initials = t.name.substring(0,2);
+
+    const newHTML = `
+      <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
       <td>
         <div class="team">
           <div class="logo">${initials}</div>
@@ -276,11 +300,42 @@ function render(data){
       <td class="points">${t.total}</td>
     `;
 
-    tbody.appendChild(tr);
+    if (row.innerHTML !== newHTML) {
+      row.innerHTML = newHTML;
+
+      // ⚡ flash effect
+      row.style.background = "rgba(0,255,136,0.15)";
+      setTimeout(()=> row.style.background="", 300);
+    }
   });
+
+  // remove extra rows
+  while (tbody.children.length > data.length) {
+    tbody.removeChild(tbody.lastChild);
+  }
 }
 
+// 🧠 HASH
+function hash(str){
+  let h=0;
+  for(let i=0;i<str.length;i++){
+    h=((h<<5)-h)+str.charCodeAt(i);
+    h|=0;
+  }
+  return h;
+}
+
+// STATUS
+function updateStatus(text){
+  document.getElementById("status").innerText =
+    text + " • " + new Date().toLocaleTimeString();
+}
+
+// 🚀 START
 loadData();
+
+// ⚡ ULTRA FAST REFRESH (EVERY 2 SEC)
+setInterval(loadData, 2000);
 
 </script>
 
