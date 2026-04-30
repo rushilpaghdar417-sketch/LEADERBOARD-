@@ -12,24 +12,32 @@
   --primary:#ff6b00;
   --secondary:#ff9500;
   --accent:#00ff88;
-  --bg:#050508;
-  --panel:#0d0d14;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family:'Rajdhani';
-  background:var(--bg);
+  font-family:'Rajdhani',sans-serif;
   color:#fff;
-  display:flex;
-  flex-direction:column;
   min-height:100vh;
+
+  /* 🔥 YOUR DRIVE BACKGROUND */
+  background: url("https://drive.google.com/uc?export=view&id=1dhKnfhyuwGSLU8FpZRTluolzDkNs8vHW") no-repeat center center fixed;
+  background-size: cover;
 }
 
-/* CONTAINER */
+/* 🌫️ DARK OVERLAY FOR READABILITY */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:0;
+}
+
 .container{
-  flex:1;
+  position:relative;
+  z-index:1;
   max-width:1100px;
   margin:auto;
   padding:30px 15px;
@@ -42,8 +50,8 @@ body{
 }
 .header h1{
   font-family:'Orbitron';
-  font-size:60px;
-  letter-spacing:10px;
+  font-size:56px;
+  letter-spacing:8px;
   background:linear-gradient(#fff,#ffcc00,#ff6b00);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -60,7 +68,6 @@ body{
   text-align:center;
   margin-bottom:20px;
   font-family:'Orbitron';
-  font-size:13px;
 }
 .dot{
   width:8px;height:8px;
@@ -68,13 +75,45 @@ body{
   display:inline-block;
   border-radius:50%;
   margin-right:6px;
+  box-shadow:0 0 10px var(--accent);
 }
 
-/* BOARD */
+/* 💎 LIQUID GLASS BOARD */
 .board{
-  background:var(--panel);
-  border-top:3px solid var(--primary);
-  border-bottom:3px solid var(--primary);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.2);
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.6),
+    inset 0 0 20px rgba(255,255,255,0.05);
+
+  overflow:hidden;
+  position:relative;
+}
+
+/* ✨ GLASS EDGE GLOW */
+.board::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:20px;
+  padding:1px;
+
+  background:linear-gradient(120deg,
+    rgba(255,255,255,0.5),
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.5)
+  );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 /* TABLE */
@@ -99,7 +138,7 @@ td:nth-child(2),th:nth-child(2){
   text-align:left;
 }
 
-/* WIDTH FIX */
+/* WIDTH */
 th:nth-child(1),td:nth-child(1){width:70px;}
 th:nth-child(2),td:nth-child(2){width:45%;}
 th:nth-child(3),td:nth-child(3){width:15%;}
@@ -108,13 +147,17 @@ th:nth-child(5),td:nth-child(5){width:15%;}
 
 /* ROW */
 tr{
-  border-bottom:1px solid rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  transition:.2s;
+}
+tr:hover{
+  background:rgba(255,255,255,0.08);
 }
 
-/* 🔥 RANK BADGE (MATCH REFERENCE STYLE) */
+/* RANK */
 .rank-box{
-  width:48px;
-  height:38px;
+  width:46px;
+  height:36px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -123,23 +166,20 @@ tr{
   clip-path:polygon(20% 0,100% 0,80% 100%,0% 100%);
 }
 
-/* TOP 3 */
 .rank-1 .rank-box{
   background:linear-gradient(135deg,#ffd700,#ff8c00);
   color:#000;
 }
 .rank-2 .rank-box{
-  background:linear-gradient(135deg,#ddd,#777);
+  background:linear-gradient(#ddd,#777);
   color:#000;
 }
 .rank-3 .rank-box{
-  background:linear-gradient(135deg,#ff9d5c,#8a4000);
+  background:linear-gradient(#ff9d5c,#8a4000);
 }
 
-/* OTHER */
 .rank-box.default{
-  background:#1a1a22;
-  color:#888;
+  background:rgba(255,255,255,0.1);
 }
 
 /* TEAM */
@@ -148,16 +188,14 @@ tr{
   align-items:center;
   gap:10px;
 }
-
 .logo{
   width:34px;height:34px;
-  background:#111;
+  background:rgba(255,255,255,0.1);
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:'Orbitron';
   color:var(--primary);
-  border:1px solid rgba(255,107,0,.3);
 }
 
 /* POINTS */
@@ -167,21 +205,16 @@ tr{
   color:var(--secondary);
 }
 
-/* FOOTER (FIXED CENTER BOTTOM) */
+/* FOOTER */
 .footer{
   text-align:center;
-  padding:15px 0;
+  padding:15px;
   font-family:'Orbitron';
   font-size:12px;
   letter-spacing:3px;
-  color:#555;
+  color:#ccc;
 }
 
-/* MOBILE */
-@media(max-width:768px){
-  .header h1{font-size:40px;}
-  th,td{padding:10px 6px;font-size:13px;}
-}
 </style>
 </head>
 
@@ -219,124 +252,63 @@ tr{
 
 </div>
 
-<!-- 🔥 PERFECT FOOTER -->
 <div class="footer">
   IRIS ESPORTS LEAGUE © 2026
 </div>
 
 <script>
-
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
-let lastHash = "";
+async function loadData(){
+  const res = await fetch(SHEET_URL + "&t=" + Date.now());
+  const csv = await res.text();
 
-// ⚡ LOAD DATA
-async function loadData() {
-  try {
-    const res = await fetch(SHEET_URL + "&t=" + Date.now()); // 🔥 prevent cache
-    const csv = await res.text();
+  const rows = csv.trim().split("\n").slice(1);
 
-    const newHash = hash(csv);
-    if (newHash === lastHash) {
-      updateStatus("LIVE • NO CHANGE");
-      return;
-    }
-    lastHash = newHash;
-
-    const rows = csv.trim().split("\n").slice(1);
-
-    const data = rows.map(r => {
-      const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-
-      return {
-        name: (c[1] || "TEAM").replace(/"/g,""),
-        place: Number(c[2]) || 0,
-        kills: Number(c[3]) || 0,
-        total: Number(c[4]) || 0
-      };
-    });
-
-    // SORT
-    data.sort((a,b)=>b.total-a.total);
-
-    renderSmooth(data);
-
-    updateStatus("LIVE • UPDATED");
-
-  } catch (e) {
-    updateStatus("CONNECTION LOST");
-    console.error(e);
-  }
-}
-
-// 🎬 SMOOTH UPDATE (NO FLICKER)
-function renderSmooth(data) {
-  const tbody = document.getElementById("tbody");
-
-  data.forEach((t,i)=>{
-    let row = tbody.children[i];
-
-    if (!row) {
-      row = document.createElement("tr");
-      tbody.appendChild(row);
-    }
-
-    const rank = i+1;
-    if(rank<=3) row.className = "rank-"+rank;
-    else row.className = "";
-
-    const initials = t.name.substring(0,2);
-
-    const newHTML = `
-      <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
-      <td>
-        <div class="team">
-          <div class="logo">${initials}</div>
-          ${t.name}
-        </div>
-      </td>
-      <td>${t.place}</td>
-      <td>${t.kills}</td>
-      <td class="points">${t.total}</td>
-    `;
-
-    if (row.innerHTML !== newHTML) {
-      row.innerHTML = newHTML;
-
-      // ⚡ flash effect
-      row.style.background = "rgba(0,255,136,0.15)";
-      setTimeout(()=> row.style.background="", 300);
-    }
+  let data = rows.map(r=>{
+    const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    return {
+      name:(c[1]||"TEAM"),
+      place:Number(c[2])||0,
+      kills:Number(c[3])||0,
+      total:Number(c[4])||0
+    };
   });
 
-  // remove extra rows
-  while (tbody.children.length > data.length) {
-    tbody.removeChild(tbody.lastChild);
-  }
-}
+  data.sort((a,b)=>b.total-a.total);
 
-// 🧠 HASH
-function hash(str){
-  let h=0;
-  for(let i=0;i<str.length;i++){
-    h=((h<<5)-h)+str.charCodeAt(i);
-    h|=0;
-  }
-  return h;
-}
+  render(data);
 
-// STATUS
-function updateStatus(text){
   document.getElementById("status").innerText =
-    text + " • " + new Date().toLocaleTimeString();
+    "LIVE • "+new Date().toLocaleTimeString();
 }
 
-// 🚀 START
+function render(data){
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML="";
+
+  data.forEach((t,i)=>{
+    const tr=document.createElement("tr");
+    const rank=i+1;
+
+    if(rank<=3) tr.classList.add("rank-"+rank);
+
+    const initials=t.name.substring(0,2);
+
+    tr.innerHTML=`
+      <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
+      <td><div class="team"><div class="logo">${initials}</div>${t.name}</div></td>
+      <td>${t.place || "—"}</td>
+      <td>${t.kills || "—"}</td>
+      <td class="points">${t.total || "—"}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
 loadData();
-
-// ⚡ ULTRA FAST REFRESH (EVERY 2 SEC)
-setInterval(loadData, 2000);
-
+setInterval(loadData,2000);
 </script>
 
 </body>
