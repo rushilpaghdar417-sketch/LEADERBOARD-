@@ -166,7 +166,7 @@ td:nth-child(5){
 
 <div class="header">
   <h1>IRIS 2K26</h1>
-  <h2>FREE FIRE MAX LEAGUE STANDING</h2>
+  <h2>LEAGUE STANDING</h2>
 </div>
 
 <div class="status">
@@ -187,7 +187,7 @@ td:nth-child(5){
 </thead>
 
 <tbody id="tbody">
-<tr><td colspan="5">ANALYSING...</td></tr>
+<tr><td colspan="5">LOADING...</td></tr>
 </tbody>
 </table>
 </div>
@@ -195,6 +195,7 @@ td:nth-child(5){
 <script>
 
 const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
+
 async function loadData(){
   try{
     const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(URL));
