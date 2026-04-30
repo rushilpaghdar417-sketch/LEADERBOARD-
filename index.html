@@ -16,8 +16,17 @@ body{
   text-align:center;
 }
 
-h1{font-size:42px;margin:20px 0 5px;color:#ff6a00;}
-h2{margin:0 0 20px;font-size:16px;color:#00d4ff;letter-spacing:2px;}
+h1{
+  font-size:42px;
+  margin:20px 0 5px;
+  color:#ff6a00;
+}
+h2{
+  margin:0 0 20px;
+  font-size:16px;
+  color:#00d4ff;
+  letter-spacing:2px;
+}
 
 table{
   width:90%;
@@ -72,29 +81,31 @@ tr:hover{background:#111;}
 
 <script>
 
-// 🔥 YOUR CSV LINK (embedded)
+// 🔥 YOUR GOOGLE SHEET CSV LINK
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
 // LOAD DATA
 async function loadData(){
   try{
-    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(SHEET_URL);
-    const res = await fetch(proxy);
-    const data = await res.json();
+    const res = await fetch(SHEET_URL);
+    const csv = await res.text();
 
-    const csv = data.contents;
     const rows = csv.trim().split("\n").slice(1);
 
-    const teams = rows.map(r=>{
-      const c = r.split(",");
-      return {
-        rank:+c[0],
-        name:c[1],
-        booyah:+c[2],
-        kills:+c[3],
-        points:+c[4]
-      }
-    }).sort((a,b)=>a.rank-b.rank);
+    const teams = rows
+      .map(r => {
+        const c = r.split(",");
+
+        return {
+          rank: Number(c[0]),
+          name: (c[1] || "").replace(/"/g,''),
+          booyah: Number(c[2]),
+          kills: Number(c[3]),
+          points: Number(c[4])
+        };
+      })
+      .filter(t => t.name) // remove empty rows
+      .sort((a,b)=>a.rank-b.rank);
 
     render(teams);
 
@@ -103,15 +114,16 @@ async function loadData(){
 
   }catch(e){
     document.getElementById("status").innerText = "Error loading data";
+    console.error(e);
   }
 }
 
-// RENDER
+// RENDER TABLE
 function render(data){
   const tbody = document.getElementById("tbody");
   tbody.innerHTML = "";
 
-  const max = Math.max(...data.map(x=>x.points));
+  const max = Math.max(...data.map(x=>x.points),1);
 
   data.forEach(t=>{
     const tr = document.createElement("tr");
@@ -135,7 +147,7 @@ function render(data){
   });
 }
 
-// AUTO LOAD + AUTO REFRESH
+// AUTO LOAD + REFRESH
 loadData();
 setInterval(loadData, 60000);
 
