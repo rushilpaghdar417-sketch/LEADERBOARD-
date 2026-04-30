@@ -239,6 +239,16 @@ tr:hover{
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
+// 🔥 ADD THIS FUNCTION
+function getTeamTag(name){
+  return name
+    .split(" ")
+    .map(w => w[0])
+    .join("")
+    .substring(0,2)
+    .toUpperCase();
+}
+
 async function loadData(){
   const res = await fetch(SHEET_URL + "&t=" + Date.now());
   const csv = await res.text();
@@ -275,7 +285,12 @@ function render(data){
 
     tr.innerHTML=`
       <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
-      <td><div class="team"><div class="logo">${t.name.substring(0,2)}</div>${t.name}</div></td>
+      <td>
+        <div class="team">
+          <div class="logo">${getTeamTag(t.name)}</div>
+          ${t.name}
+        </div>
+      </td>
       <td>${t.place || "—"}</td>
       <td>${t.kills || "—"}</td>
       <td class="points">${t.total || "—"}</td>
