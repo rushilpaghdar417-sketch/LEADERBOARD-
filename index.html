@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IRIS 2K26 — League Standing</title>
+<title>IRIS 2K26 — Leaderboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
@@ -20,24 +20,18 @@ body{
   font-family:'Rajdhani',sans-serif;
   color:#fff;
   min-height:100vh;
-
   background:
     linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
     url("https://raw.githubusercontent.com/rushilpaghdar417-sketch/LEADERBOARD-/39b63340f4503d780e7949d72f7a1ea69b2e2423/Ultra_wide_cinematic_background_for_202604302053.jpeg.png");
-
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
-/* header */
-.header{
-  text-align:center;
-  margin-bottom:25px;
-}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:12px;}
 .header h1{
-  font-family:'Orbitron';
-  font-size:48px;
-  letter-spacing:6px;
+  font-family:'orbitron';
+  font-size:20px;
+  letter-spacing:5px;
   background:linear-gradient(#fff,#ffcc00,#ff6b00);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -45,166 +39,89 @@ body{
 .header h2{
   font-family:'Orbitron';
   color:var(--accent);
-  letter-spacing:5px;
-  font-size:13px;
+  letter-spacing:1px;
+  font-size:9px;
 }
 
-/* status */
-.status{
-  text-align:center;
-  margin-bottom:20px;
+/* STATUS */
+.status{text-align:center;margin-bottom:15px;font-family:'Orbitron';font-size:12px;}
+.dot{width:8px;height:8px;background:var(--accent);display:inline-block;border-radius:50%;}
+
+/* 🔥 SINGLE TAB BAR */
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:15px;
+  flex-wrap:wrap;
+}
+
+.tab{
+  padding:8px 14px;
+  background:rgba(255,255,255,0.08);
+  border-radius:8px;
+  cursor:pointer;
   font-family:'Orbitron';
-  font-size:13px;
-}
-.dot{
-  width:8px;height:8px;
-  background:var(--accent);
-  display:inline-block;
-  border-radius:50%;
-  margin-right:6px;
-  box-shadow:0 0 10px var(--accent);
-}
-
-/* 💎 GLASS BOARD */
-.board{
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,0.25);
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.6),
-    inset 0 0 25px rgba(255,255,255,0.08);
-
-  overflow:hidden;
-  position:relative;
-}
-
-/* glass reflection */
-.board::after{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:40%;
-
-  background:linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.25),
-    rgba(255,255,255,0.05),
-    transparent
-  );
-}
-
-/* table */
-table{
-  width:100%;
-  border-collapse:collapse;
-  table-layout:fixed;
-}
-
-th,td{
-  padding:12px;
-  text-align:center;
-}
-
-th{
-  font-family:'Orbitron';
-  color:var(--secondary);
   font-size:11px;
-}
-
-td:nth-child(2),th:nth-child(2){
-  text-align:left;
-}
-
-/* widths */
-th:nth-child(1),td:nth-child(1){width:60px;}
-th:nth-child(2),td:nth-child(2){width:45%;}
-th:nth-child(3),td:nth-child(3){width:15%;}
-th:nth-child(4),td:nth-child(4){width:15%;}
-th:nth-child(5),td:nth-child(5){width:15%;}
-
-/* rows */
-tr{
-  border-bottom:1px solid rgba(255,255,255,0.08);
   transition:0.2s;
 }
-tr:hover{
-  background:rgba(255,255,255,0.08);
+
+.tab.active{
+  background:var(--primary);
 }
 
-/* rank */
+/* BOARD */
+.board{
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px;text-align:center;}
+th{font-family:'Orbitron';color:var(--secondary);font-size:10px;}
+td:nth-child(2),th:nth-child(2){text-align:left;}
+
+tr{border-bottom:1px solid rgba(255,255,255,0.08);}
+tr:hover{background:rgba(255,255,255,0.08);}
+
+/* RANK */
 .rank-box{
-  width:42px;
-  height:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Orbitron';
-  font-weight:900;
+  width:36px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';font-weight:900;
   clip-path:polygon(20% 0,100% 0,80% 100%,0% 100%);
 }
+.rank-1 .rank-box{background:gold;color:#000;}
+.rank-2 .rank-box{background:silver;color:#000;}
+.rank-3 .rank-box{background:#cd7f32;}
+.rank-box.default{background:rgba(255,255,255,0.15);}
 
-.rank-1 .rank-box{
-  background:linear-gradient(#ffd700,#ff8c00);
-  color:#000;
-}
-.rank-2 .rank-box{
-  background:linear-gradient(#ddd,#777);
-  color:#000;
-}
-.rank-3 .rank-box{
-  background:linear-gradient(#ff9d5c,#8a4000);
-}
-
-.rank-box.default{
-  background:rgba(255,255,255,0.15);
-}
-
-/* team */
-.team{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+/* TEAM */
+.team{display:flex;align-items:center;gap:10px;}
 .logo{
-  width:30px;height:30px;
+  width:26px;height:26px;
   background:rgba(255,255,255,0.1);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Orbitron';
-  color:var(--primary);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';color:var(--primary);
 }
 
-/* points */
-.points{
-  font-family:'Orbitron';
-  color:var(--secondary);
-}
+.points{font-family:'Orbitron';color:var(--secondary);}
 
-/* footer */
 .footer{
-  text-align:center;
-  padding:15px;
-  font-family:'Orbitron';
-  font-size:11px;
-  color:#aaa;
+  text-align:center;padding:12px;
+  font-family:'Orbitron';font-size:10px;color:#aaa;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
 <div class="header">
-  <h1>VADMED PRESENTS IRIS 2K26</h1>
-  <h2>LEAGUE STANDING</h2>
+  <h1>VADMED IRIS 2K26</h2>
+  <h2>TOURNAMENT LEADERBOARD</h2>
 </div>
 
 <div class="status">
@@ -212,15 +129,25 @@ tr:hover{
   <span id="status">LIVE</span>
 </div>
 
+<!-- 🔥 ONE TAB SYSTEM -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overall', this)">Overall</div>
+  <div class="tab" onclick="switchTab('m1', this)">Match 1</div>
+  <div class="tab" onclick="switchTab('m2', this)">Match 2</div>
+  <div class="tab" onclick="switchTab('m3', this)">Match 3</div>
+  <div class="tab" onclick="switchTab('m4', this)">Match 4</div>
+  <div class="tab" onclick="switchTab('m5', this)">Match 5</div>
+</div>
+
 <div class="board">
 <table>
 <thead>
 <tr>
-  <th>RANK</th>
+  <th>#</th>
   <th>TEAM</th>
-  <th>PLACE</th>
-  <th>KILLS</th>
-  <th>PTS</th>
+  <th>PP</th>
+  <th>KP</th>
+  <th>TOTAL</th>
 </tr>
 </thead>
 
@@ -230,79 +157,132 @@ tr:hover{
 </table>
 </div>
 
-</div>
-
-<div class="footer">
-  IRIS ESPORTS LEAGUE © 2026
-</div>
+<div class="footer">IRIS ESPORTS © 2026</div>
 
 <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv";
 
-// 🔥 ADD THIS FUNCTION
-function getTeamTag(name){
-  return name
-    .split(" ")
-    .map(w => w[0])
-    .join("")
-    .substring(0,2)
-    .toUpperCase();
+/* 🔥 YOUR SHEETS */
+const SHEETS = {
+  m1:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSsiqcYXYmtB8nLGXVP-Fkwr6DVZOehzH83ax_-U8agRM4lG-JH_oSSQClT0ENVCQgdx1LuklCjpRt7/pub?gid=322356309&single=true&output=csv",
+  m2:"https://docs.google.com/spreadsheets/d/e/2PACX-1vTDM5jG21Fap58WFf0hT1C7i0mZWZhl4bmNpwddHB3DS3nqTpZHi-XPDWosUmLuKmHjTn0UHGnDWQzp/pub?gid=322356309&single=true&output=csv",
+  m3:"https://docs.google.com/spreadsheets/d/e/2PACX-1vRVbhVzK4frwdv40vAZfLdlRHHm5e96Z089RWRdb7ttPSPnMwn2uaa8FMvDbv7asgDEUcYweyGZHnQt/pub?gid=322356309&single=true&output=csv",
+  m4:"https://docs.google.com/spreadsheets/d/e/2PACX-1vRhV9tU3IG6uELYVyCL4mC6GIwrhz-jy8Z-JFY2ovdpDssVynKQfo4BJpkkT9kqmaycntXYeAjnr2EL/pub?gid=322356309&single=true&output=csv",
+  m5:"https://docs.google.com/spreadsheets/d/e/2PACX-1vRWZTheaWUlfQClW3-Fol1_5ki7TvUABMCiUQOp1_naPBR3W84wAhFAX8FY-25RSucDb93hoxR9pN7U/pub?gid=322356309&single=true&output=csv"
+};
+
+let currentTab="overall";
+
+/* TEAM TAG */
+function getTag(name){
+  return name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
 }
 
-async function loadData(){
-  const res = await fetch(SHEET_URL + "&t=" + Date.now());
-  const csv = await res.text();
+/* FETCH CSV */
+async function fetchCSV(url){
+  const res = await fetch(url+"&t="+Date.now());
+  const text = await res.text();
 
-  const rows = csv.trim().split("\n").slice(1);
+  const rows = text.trim().split("\n").slice(1);
 
-  let data = rows.map(r=>{
+  return rows.map(r=>{
     const c = r.split(",");
     return {
-      name:c[1] || "TEAM",
-      place:Number(c[2])||0,
-      kills:Number(c[3])||0,
-      total:Number(c[4])||0
+      name:c[1],
+      place:+c[2] || 0,
+      kills:+c[3] || 0,
+      total:+c[4] || 0
     };
   });
+}
+
+/* 🔥 COMBINE ALL MATCHES */
+async function loadOverall(){
+  const matches = await Promise.all([
+    fetchCSV(SHEETS.m1),
+    fetchCSV(SHEETS.m2),
+    fetchCSV(SHEETS.m3),
+    fetchCSV(SHEETS.m4),
+    fetchCSV(SHEETS.m5)
+  ]);
+
+  const combined = {};
+
+  matches.forEach(match=>{
+    match.forEach(team=>{
+      if(!combined[team.name]){
+        combined[team.name] = {
+          name:team.name,
+          place:0,
+          kills:0,
+          total:0
+        };
+      }
+
+      combined[team.name].place += team.place;
+      combined[team.name].kills += team.kills;
+      combined[team.name].total += team.total;
+    });
+  });
+
+  const data = Object.values(combined);
 
   data.sort((a,b)=>b.total-a.total);
 
   render(data);
+}
+
+/* LOAD SINGLE MATCH */
+async function loadMatch(tab){
+  const data = await fetchCSV(SHEETS[tab]);
+  data.sort((a,b)=>b.total-a.total);
+  render(data);
+}
+
+/* MAIN LOAD */
+function loadData(){
+  if(currentTab === "overall"){
+    loadOverall();
+  } else {
+    loadMatch(currentTab);
+  }
 
   document.getElementById("status").innerText =
     "LIVE • "+new Date().toLocaleTimeString();
 }
 
+/* RENDER */
 function render(data){
   const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   data.forEach((t,i)=>{
-    const tr=document.createElement("tr");
     const rank=i+1;
-
+    const tr=document.createElement("tr");
     if(rank<=3) tr.classList.add("rank-"+rank);
 
     tr.innerHTML=`
       <td><div class="rank-box ${rank<=3?'':'default'}">${rank}</div></td>
-      <td>
-        <div class="team">
-          <div class="logo">${getTeamTag(t.name)}</div>
-          ${t.name}
-        </div>
-      </td>
-      <td>${t.place || "—"}</td>
-      <td>${t.kills || "—"}</td>
-      <td class="points">${t.total || "—"}</td>
+      <td><div class="team"><div class="logo">${getTag(t.name)}</div>${t.name}</div></td>
+      <td>${t.place}</td>
+      <td>${t.kills}</td>
+      <td class="points">${t.total}</td>
     `;
-
     tbody.appendChild(tr);
   });
 }
 
+/* SWITCH TAB */
+function switchTab(tab, el){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  loadData();
+}
+
+/* AUTO REFRESH */
 loadData();
 setInterval(loadData,2000);
-</script>
 
+</script>
 </body>
 </html>
